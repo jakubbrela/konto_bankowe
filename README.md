@@ -1,0 +1,1 @@
+# konto_bankowe
