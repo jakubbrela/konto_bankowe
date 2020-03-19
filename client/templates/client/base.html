@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'clientapp/main.css' %}">
+
+    {% if title %}
+    <title>Bank - {{ title }}</title>
+    {% else %}
+    <title>Bank</title>
+    {% endif %}
+</head>
+<style>
+	#popup{display:none; background:#efefef; border:1px solid black; width:50%; height:500px;}
+</style>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="{% url 'home' %}">Bank account</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{% url 'home' %}">Account home</a>
+                        <a class="nav-item nav-link" href="{% url 'send_request' %}">Request</a>
+                        <a class="nav-item nav-link" href="{% url 'my_requests' %}">My requests</a>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav">
+                        {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                        <a class="nav-item nav-link" href="{% url 'worker_home' rot=0 %}">Staff</a>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                        <a class="nav-item nav-link" href="/admin">Admin</a>
+                        {% endif %}
+                        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                        {% else %}
+                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% if messages %}
+                {% for message in messages %}
+                <div class='alert alert-{{ message.tags }}'>
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+            {% block sidebar %}{% endblock %}
+        </div>
+
+    </main>
+	<!-- <button onclick="document.getElementById('popup').style.display='block'">Informacja o rodo i cookies</button> -->
+    <div id="popup" style="display:none">
+				<h2 style="font-size: 1em">Zasady dotyczące COOKIES</h2>
+				<p style="font-size: 0.8em">Informujemy, że na naszej stronie używamy tzw. plików „cookies” (tłum. „ciasteczek”) oraz podobnych technologii. Czynimy to mając na celu działania o charakterze statystycznym, pragnąć dostosować system do indywidualnych potrzeb użytkownika oraz mając na względzie ułatwienie korzystania z naszego serwisu. Korzystanie z konta bankowego w naszym banku oznacza zatem, iż ustawienia i informacje dotyczące serwisu zapisywane będą w pamięci urządzenia, z którego odbywa się dostęp do systemu.
+Jeśli chcesz możesz zmienić ustawienia swojej przeglądarki internetowej, a także zapoznać się ze szczegółowymi informacjami w naszej polityce plików cookies.</p>
+				<h2 style="font-size: 1em">Zasady dotyczące RODO</h2>
+				<p style="font-size: 0.8em">Administratorem Twoich danych jest [pełna nazwa firmy] z siedzibą w [adres siedziby], wpisanej do Centralnej Ewidencji i Informacji o Działalności Gospodarczej, pod numerem NIP: [NIP], REGON: [REGON]. W sprawach związanych z przetwarzaniem i ochroną danych osobowych wyznaczony został punkt kontaktowy w postaci adresu e-mail: [ades e-mail] Kontakt we wskazanych sprawach możliwy jest także w postaci tradycyjnej korespondencji na adres administratora z dopiskiem: „Ochrona Danych Osobowych” oraz osobiście pod adresem [adres siedziby bądź miejsca wykonywania działalności].
+
+Podane przez Ciebie dane osobowe będą przetwarzane w następujących celach:
+– wykonania umowy kupna-sprzedaży bądź usługi – przetwarzanie jest niezbędne do wykonania umowy, aż do czasu zakończenia umowy,
+– marketingu bezpośredniego – do czasu zakończenia umowy lub złożenia sprzeciwu,
+– finansowo-księgowych – przetwarzanie jest niezbędne do wykonania przepisów prawa podatkowego,
+– obrony przed roszczeniami i dochodzenia roszczeń – do czasu wygaśnięcia okresu roszczeń zgodnie z przepisami Kodeksu Cywilnego,
+– prowadzenia procesów reklamacyjnych.
+
+Posiadasz prawo dostępu do treści swoich danych oraz prawo ich sprostowania, usunięcia, ograniczenia przetwarzania, prawo do przenoszenia danych, prawo wniesienia sprzeciwu (np. jeśli dane są przetwarzane na podstawie Twojej zgody lub w celach marketingowych czy udostępniania Twoich danych); posiadasz prawo do cofnięcia zgody w dowolnym momencie. W celu cofnięcia zgody możesz skontaktować się z punktem obsługi klienta w naszej siedzibie bądź biurze [adres siedziby bądź biura] lub wysyłając wiadomość e-mail na adres: [adres e-mail]. Masz również prawo wniesienia skargi do organu nadzorczego – Prezesa Urzędu Ochrony Danych Osobowych.
+
+Podanie przez Ciebie danych osobowych jest w pełni dobrowolne. Niepodanie danych osobowych będzie skutkowało niemożliwością pełnego wykonania zobowiązań, przyjętych przez [nazwa firmy] w ramach zawieranych z Tobą umów.</p>
+				<button onclick="cookies()">Schowaj</button>
+		</div>
+	</div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script>
+    	document.addEventListener("DOMContentLoaded", function() {
+	  		showCookies();
+		});
+    
+    	
+    	function showCookies() {
+    		var ifShowCookies = localStorage.getItem("showCookiesBank");
+    		if(ifShowCookies != 'false'){
+    		document.getElementById('popup').style.display='block';
+			} else {
+    		document.getElementById('popup').style.display='none';
+    		}
+    	}	
+    	
+		function cookies() {		
+			document.getElementById('popup').style.display='none';
+			localStorage.setItem("showCookiesBank", false);
+		}
+    </script>
+</body>
+
+</html>
